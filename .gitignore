@@ -1,4 +1,5 @@
 .env
+.gitignore
 service_account.json
 teams.json
 __pycache__/

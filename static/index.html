@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Регистрация | Fredrinn MLBB Cup</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #070d1e;
+      --bg-card: rgba(16, 26, 54, 0.85);
+      --bg-input: rgba(10, 18, 38, 0.85);
+      --border-card: rgba(59, 130, 246, 0.25);
+      --border-focus: #38bdf8;
+      --primary-blue: #2563eb;
+      --accent-glow: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --gold-accent: #f59e0b;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #172a5a 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px 16px 32px;
+      overflow-x: hidden;
+    }
+
+    /* Фоновое сапфировое свечение */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Шапка турнира с Фредеринном */
+    .hero-header {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.7));
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      width: 62px;
+      height: 62px;
+      flex-shrink: 0;
+    }
+
+    .avatar-icon {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--accent-glow);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .avatar-icon svg {
+      width: 34px;
+      height: 34px;
+      fill: #fff;
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #10b981;
+      color: #022c22;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    .header-text h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .header-text h1 span {
+      color: var(--accent-glow);
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+    }
+
+    .header-quote {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    /* Карточки секций */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(10px);
+    }
+
+    .card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent-glow);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .req {
+      color: var(--accent-glow);
+      margin-left: 2px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 12px;
+      width: 18px;
+      height: 18px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px 12px 38px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      background: rgba(15, 27, 56, 0.95);
+    }
+
+    input::placeholder {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    /* Слоты игроков */
+    .slots-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .player-slot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .slot-num {
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: var(--accent-glow);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .player-slot input {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .btn-add-sub {
+      width: 100%;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px dashed rgba(56, 189, 248, 0.4);
+      color: var(--accent-glow);
+      padding: 9px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-add-sub:active {
+      background: rgba(37, 99, 235, 0.25);
+    }
+
+    /* Кнопка отправки формы */
+    .submit-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 15px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading .spinner { display: inline-block; }
+    .loading .btn-text { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Шапка маскота Фредеринна -->
+  <div class="hero-header">
+    <div class="avatar-wrapper">
+      <div class="avatar-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 4.5c1.38 0 2.5 1.12 2.5 2.5 0 1.03-.63 1.91-1.53 2.29L14 15h-4l1.03-3.71C10.13 10.91 9.5 10.03 9.5 9c0-1.38 1.12-2.5 2.5-2.5z"/>
+        </svg>
+      </div>
+      <div class="status-badge">MLBB 5v5</div>
+    </div>
+    <div class="header-text">
+      <h1>FRED RINN <span>CUP</span></h1>
+      <p class="header-quote">«Опасность? Это просто часть моей работы»</p>
+    </div>
+  </div>
+
+  <form id="f">
+
+    <!-- Блок 1: Информация о команде -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        Данные команды
+      </div>
+
+      <div class="form-group">
+        <label>Название команды <span class="req">*</span></label>
+        <div class="input-wrapper">
+          <svg class="input-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z"/></svg>
+          <input name="team_name" placeholder="Например: Blacklist Dynasty" required minlength="2" maxlength="40">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Капитан команды <span class="req">*</span></label>
+        <div class="input-wrapper">
+          <svg class="input-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <input name="captain" id="captainInput" placeholder="Имя или игровой ник" required minlength="2" maxlength="60">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Связь с капитаном (@ник или телефон) <span class="req">*</span></label>
+        <div class="input-wrapper">
+          <svg class="input-icon" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+          <input name="contact" id="contactInput" placeholder="@username в Telegram" required maxlength="60">
+        </div>
+      </div>
+    </div>
+
+    <!-- Блок 2: Слоты игроков (Основа 5 + Запас) -->
+    <div class="card">
+      <div class="card-title">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Состав команды (Основной состав 5x5)
+      </div>
+
+      <p class="slots-hint">Укажите никнейм и игровой ID (сервер) каждого участника:</p>
+
+      <div class="player-slot">
+        <div class="slot-num">1</div>
+        <input type="text" class="slot-input" placeholder="Игрок 1 (Капитан) — Ник (ID)" required>
+      </div>
+
+      <div class="player-slot">
+        <div class="slot-num">2</div>
+        <input type="text" class="slot-input" placeholder="Игрок 2 — Ник (ID)" required>
+      </div>
+
+      <div class="player-slot">
+        <div class="slot-num">3</div>
+        <input type="text" class="slot-input" placeholder="Игрок 3 — Ник (ID)" required>
+      </div>
+
+      <div class="player-slot">
+        <div class="slot-num">4</div>
+        <input type="text" class="slot-input" placeholder="Игрок 4 — Ник (ID)" required>
+      </div>
+
+      <div class="player-slot">
+        <div class="slot-num">5</div>
+        <input type="text" class="slot-input" placeholder="Игрок 5 — Ник (ID)" required>
+      </div>
+
+      <!-- Контейнер для запасных -->
+      <div id="extraSubs"></div>
+
+      <button type="button" class="btn-add-sub" id="btnAddSub" onclick="addSubSlot()">
+        + Добавить запасного игрока
+      </button>
+    </div>
+
+    <!-- Кнопка отправки -->
+    <button id="btn" class="submit-btn" type="submit">
+      <span class="btn-text">Зарегистрироваться</span>
+      <div class="spinner"></div>
+    </button>
+  </form>
+</div>
+
+<script>
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+
+    // Автоподстановка Telegram @username
+    if (tg.initDataUnsafe?.user?.username) {
+      const contactInput = document.getElementById("contactInput");
+      if (!contactInput.value) {
+        contactInput.value = "@" + tg.initDataUnsafe.user.username;
+      }
+    }
+  }
+
+  // Telegram тактильный отклик (Haptics)
+  function triggerHaptic(type = 'light') {
+    if (tg?.HapticFeedback) {
+      if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+      else if (type === 'error') tg.HapticFeedback.notificationOccurred('error');
+      else tg.HapticFeedback.impactOccurred(type);
+    }
+  }
+
+  // Добавление до 2-х запасных игроков
+  let subCount = 0;
+  function addSubSlot() {
+    if (subCount >= 2) return;
+    triggerHaptic('medium');
+    subCount++;
+
+    const container = document.getElementById("extraSubs");
+    const slot = document.createElement("div");
+    slot.className = "player-slot";
+    slot.innerHTML = `
+      <div class="slot-num" style="border-color: #f59e0b; color: #f59e0b;">З${subCount}</div>
+      <input type="text" class="slot-input" placeholder="Запасной игрок ${subCount} — Ник (ID)">
+    `;
+    container.appendChild(slot);
+
+    if (subCount >= 2) {
+      document.getElementById("btnAddSub").style.display = "none";
+    }
+  }
+
+  // Автозаполнение ника капитана в слот 1
+  const captainInput = document.getElementById("captainInput");
+  const slot1 = document.querySelector(".slot-input");
+  captainInput.addEventListener("input", (e) => {
+    if (slot1 && (!slot1.dataset.userEdited || slot1.value === "")) {
+      slot1.value = e.target.value;
+    }
+  });
+  slot1.addEventListener("input", function() {
+    this.dataset.userEdited = "true";
+  });
+
+  // Отправка формы
+  document.getElementById("f").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    triggerHaptic('medium');
+
+    const btn = document.getElementById("btn");
+
+    // Формируем единый список игроков для бэкенда
+    const slotInputs = document.querySelectorAll(".slot-input");
+    const playersList = [];
+
+    slotInputs.forEach((inp, idx) => {
+      const val = inp.value.trim();
+      if (val) {
+        const prefix = idx < 5 ? `${idx + 1}. ` : `[Запасной ${idx - 4}] `;
+        playersList.push(prefix + val);
+      }
+    });
+
+    if (playersList.length < 5) {
+      triggerHaptic('error');
+      const msg = "Заполните все 5 основных слотов команды!";
+      if (tg) tg.showAlert(msg); else alert(msg);
+      return;
+    }
+
+    const formData = new FormData(e.target);
+    const body = Object.fromEntries(formData);
+    body.players = playersList.join("\n");
+    body.init_data = tg?.initData || "";
+
+    btn.disabled = true;
+    btn.classList.add("loading");
+
+    try {
+      const r = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const j = await r.json();
+
+      if (!r.ok) {
+        throw new Error(typeof j.detail === "string" ? j.detail : "Проверьте поля формы");
+      }
+
+      triggerHaptic('success');
+      if (tg) {
+        tg.showAlert("🛡️ Команда зарегистрирована! Фредеринн ждет вас на турнире! 🎉", () => tg.close());
+      } else {
+        alert("Команда зарегистрирована!");
+      }
+    } catch (err) {
+      triggerHaptic('error');
+      if (tg) {
+        tg.showAlert("Ошибка: " + err.message);
+      } else {
+        alert("Ошибка: " + err.message);
+      }
+      btn.disabled = false;
+      btn.classList.remove("loading");
+    }
+  });
+</script>
+</body>
+</html>

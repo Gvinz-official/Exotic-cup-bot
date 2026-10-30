@@ -1,0 +1,21 @@
+# Secrets - never commit these
+.env
+service_account.json
+*.json.key
+
+# Local data
+teams.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Tools / OS
+cloudflared.exe
+*.exe
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
